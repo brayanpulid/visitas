@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Techcis Pro - Gestión de Servicios TI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        :root { --primary: #a855f7; --secondary: #0f172a; --border: #e2e8f0; --bg: #f8fafc; }
+        
+        body { background-color: #f1f5f9; font-family: 'Inter', sans-serif; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
+
+        #documento-pdf {
+            width: 800px;
+            height: 1045px; /* Proporción Carta Exacta */
+            background-color: #ffffff;
+            padding: 35px 45px;
+            box-sizing: border-box;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @media screen and (max-width: 800px) { 
+            #documento-pdf { width: 98vw; height: auto; min-height: 100vh; padding: 20px; } 
+        }
+
+        header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); padding-bottom: 10px; margin-bottom: 15px; }
+        .brand { font-weight: 800; font-size: 24px; color: var(--secondary); text-transform: uppercase; margin: 0; }
+        .brand span { color: var(--primary); }
+        .doc-info { text-align: right; font-size: 9px; color: #64748b; font-weight: 700; line-height: 1.4; }
+
+        .section-header { 
+            font-size: 9px; font-weight: 800; color: var(--primary); text-transform: uppercase; 
+            background: var(--bg); padding: 6px 12px; border-radius: 4px; margin: 12px 0 8px; border-left: 4px solid var(--primary);
+        }
+
+        .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
+        .field { margin-bottom: 6px; }
+        .field label { display: block; font-size: 8px; color: #64748b; font-weight: 700; text-transform: uppercase; margin-bottom: 3px; }
+        
+        input, select, textarea {
+            width: 100%; border: 1px solid var(--border); padding: 8px; color: var(--secondary); border-radius: 5px; font-size: 13px; box-sizing: border-box; font-family: 'Inter';
+        }
+
+        /* Checklist Profesional */
+        .checklist { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 5px; }
+        .check-item { display: flex; align-items: center; font-size: 11px; gap: 8px; color: #334155; }
+        .check-item input { width: auto; }
+
+        .signature-wrap { margin-top: auto; border: 1px solid var(--border); border-radius: 8px; background: #fff; }
+        canvas { width: 100%; height: 130px; display: block; touch-action: none; }
+        .signature-footer { font-size: 9px; font-weight: 700; color: #94a3b8; padding: 6px; text-align: center; border-top: 1px solid var(--border); text-transform: uppercase; }
+
+        .controls { margin-top: 15px; display: flex; gap: 10px; width: 100%; max-width: 800px; }
+        .btn { flex: 1; padding: 14px; border: none; border-radius: 50px; font-weight: 800; cursor: pointer; text-transform: uppercase; font-size: 11px; transition: 0.2s; }
+        .btn-pdf { background: var(--secondary); color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+
+<div id="documento-pdf">
+    <header>
+        <div>
+            <div class="brand">TECH<span>CIS</span></div>
+            <div style="font-size: 8px; color: #64748b; font-weight: 700;">Infrastructure & Security Solutions</div>
+        </div>
+        <div class="doc-info">ORDEN DE TRABAJO: <span id="orden-id">#---</span><br>FECHA: <span id="fecha-actual"></span></div>
+    </header>
+
+    <div class="section-header">Identificación del Servicio</div>
+    <div class="grid">
+        <div class="field"><label>Cliente / Empresa</label><input type="text" id="nombre_cliente" placeholder="Nombre"></div>
+        <div class="field"><label>Sede / Departamento</label><input type="text" placeholder="Ej: Rack Principal"></div>
+        <div class="field">
+            <label>Tipo de Servicio</label>
+            <select>
+                <option>Correctivo (Falla)</option>
+                <option>Preventivo (Mant.)</option>
+                <option>Instalación / Obra</option>
+                <option>Consultoría TI</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="section-header">Detalles de Infraestructura</div>
+    <div class="grid">
+        <div class="field"><label>ID Activo / Serial</label><input type="text" placeholder="Tag de Inventario"></div>
+        <div class="field"><label>Equipo / Software</label><input type="text" placeholder="Ej: Mikrotik / ERP"></div>
+        <div class="field"><label>IP / Acceso</label><input type="text" placeholder="192.168.x.x"></div>
+    </div>
+
+    <div class="section-header">Protocolo de Seguridad y Verificación</div>
+    <div class="checklist">
+        <div class="check-item"><input type="checkbox" checked> Copia de seguridad (Backup) realizada</div>
+        <div class="check-item"><input type="checkbox" checked> Firmware / Parches actualizados</div>
+        <div class="check-item"><input type="checkbox"> Limpieza física de componentes</div>
+        <div class="check-item"><input type="checkbox" checked> Pruebas de conectividad exitosas</div>
+    </div>
+
+    <div class="section-header">Informe Técnico de Actividades</div>
+    <div style="flex-grow: 1;">
+        <textarea style="height: 140px; line-height: 1.5;" placeholder="Detalle técnico paso a paso de la intervención realizada..."></textarea>
+    </div>
+
+    <div class="section-header">Cierre y Conformidad</div>
+    <div class="grid">
+        <div class="field">
+            <label>Estado Final del Sistema</label>
+            <select style="font-weight: bold; color: #059669;">
+                <option>✅ Operativo / Entregado</option>
+                <option>⏳ Pendiente Repuesto</option>
+                <option>🔍 En Observación</option>
+            </select>
+        </div>
+        <div class="field"><label>Hora Inicio / Fin</label><input type="text" placeholder="08:00 - 10:30"></div>
+        <div class="field"><label>Técnico Responsable</label><input type="text" placeholder="Firma interna"></div>
+    </div>
+
+    <div class="signature-wrap">
+        <canvas id="pad"></canvas>
+        <div class="signature-footer">Firma de Aceptación del Cliente</div>
+    </div>
+</div>
+
+<div class="controls" data-html2canvas-ignore="true">
+    <button class="btn" style="background:#e2e8f0;" onclick="signaturePad.clear()">Limpiar</button>
+    <button class="btn btn-pdf" onclick="generarPDF()">Exportar Reporte Pro</button>
+</div>
+
+<script>
+    const canvas = document.getElementById('pad');
+    const signaturePad = new SignaturePad(canvas, { penColor: '#0f172a' });
+
+    function resize() {
+        const ratio = Math.max(window.devicePixelRatio || 1, 1);
+        canvas.width = canvas.offsetWidth * ratio;
+        canvas.height = canvas.offsetHeight * ratio;
+        canvas.getContext("2d").scale(ratio, ratio);
+        signaturePad.clear();
+    }
+
+    window.onload = () => {
+        resize();
+        document.getElementById('fecha-actual').innerText = new Date().toLocaleDateString();
+        document.getElementById('orden-id').innerText = '#' + Math.floor(1000 + Math.random() * 9000);
+    };
+
+    function generarPDF() {
+        if (signaturePad.isEmpty()) return alert("El reporte requiere firma del cliente.");
+        const element = document.getElementById('documento-pdf');
+        html2pdf().set({
+            margin: 0,
+            filename: 'Techcis_Pro_Report.pdf',
+            image: { type: 'jpeg', quality: 1 },
+            html2canvas: { scale: 2, useCORS: true, scrollY: 0, windowWidth: 800, width: 800 },
+            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+        }).from(element).save();
+    }
+</script>
+
+<script>
+    const manifest = {
+        "name": "Techcis Pro",
+        "short_name": "Techcis",
+        "start_url": ".",
+        "display": "standalone",
+        "background_color": "#ffffff",
+        "theme_color": "#a855f7",
+        "icons": [{"src": "https://cdn-icons-png.flaticon.com/512/2906/2906274.png", "sizes": "512x512", "type": "image/png"}]
+    };
+    const blob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
+    const link = document.createElement('link');
+    link.rel = 'manifest';
+    link.href = URL.createObjectURL(blob);
+    document.head.appendChild(link);
+
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register(URL.createObjectURL(new Blob([`
+            self.addEventListener('install', e => self.skipWaiting());
+            self.addEventListener('fetch', e => e.respondWith(fetch(e.request)));
+        `], {type: 'text/javascript'})));
+    }
+</script>
+</body>
+</html>
