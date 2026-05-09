@@ -2,62 +2,98 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Techcis Pro - Gestión de Servicios TI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techcis Pro - Reporte Oficial</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
         :root { --primary: #a855f7; --secondary: #0f172a; --border: #e2e8f0; --bg: #f8fafc; }
         
-        body { background-color: #f1f5f9; font-family: 'Inter', sans-serif; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
+        /* 1. ESTILOS PARA LA PANTALLA */
+        body { 
+            background-color: #f1f5f9; 
+            font-family: 'Inter', sans-serif; 
+            margin: 0; 
+            padding: 40px 20px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+        }
 
         #documento-pdf {
-            width: 800px;
-            height: 1045px; /* Proporción Carta Exacta */
+            width: 100%;
+            max-width: 850px;
             background-color: #ffffff;
-            padding: 35px 45px;
+            padding: 50px;
             box-sizing: border-box;
-            position: relative;
-            display: flex;
-            flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border-radius: 8px;
         }
 
-        @media screen and (max-width: 800px) { 
-            #documento-pdf { width: 98vw; height: auto; min-height: 100vh; padding: 20px; } 
-        }
-
-        header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); padding-bottom: 10px; margin-bottom: 15px; }
-        .brand { font-weight: 800; font-size: 24px; color: var(--secondary); text-transform: uppercase; margin: 0; }
+        header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); padding-bottom: 15px; margin-bottom: 20px; }
+        .brand { font-weight: 800; font-size: 28px; color: var(--secondary); text-transform: uppercase; margin: 0; }
         .brand span { color: var(--primary); }
-        .doc-info { text-align: right; font-size: 9px; color: #64748b; font-weight: 700; line-height: 1.4; }
+        .doc-info { text-align: right; font-size: 11px; color: #64748b; font-weight: 700; }
 
         .section-header { 
-            font-size: 9px; font-weight: 800; color: var(--primary); text-transform: uppercase; 
-            background: var(--bg); padding: 6px 12px; border-radius: 4px; margin: 12px 0 8px; border-left: 4px solid var(--primary);
+            font-size: 11px; font-weight: 800; color: var(--primary); text-transform: uppercase; 
+            background: var(--bg); padding: 10px 15px; border-radius: 4px; margin-top: 20px; border-left: 5px solid var(--primary);
         }
 
-        .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
-        .field { margin-bottom: 6px; }
-        .field label { display: block; font-size: 8px; color: #64748b; font-weight: 700; text-transform: uppercase; margin-bottom: 3px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-top: 10px; }
+        .field label { display: block; font-size: 10px; color: #64748b; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; }
         
         input, select, textarea {
-            width: 100%; border: 1px solid var(--border); padding: 8px; color: var(--secondary); border-radius: 5px; font-size: 13px; box-sizing: border-box; font-family: 'Inter';
+            width: 100%; border: 1px solid var(--border); padding: 12px; color: var(--secondary); border-radius: 6px; font-size: 14px; box-sizing: border-box; font-family: 'Inter';
         }
 
-        /* Checklist Profesional */
-        .checklist { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 5px; }
-        .check-item { display: flex; align-items: center; font-size: 11px; gap: 8px; color: #334155; }
-        .check-item input { width: auto; }
+        textarea { 
+            min-height: 200px; 
+            resize: vertical; 
+            line-height: 1.6; 
+            white-space: pre-wrap; 
+            overflow-wrap: break-word;
+        }
 
-        .signature-wrap { margin-top: auto; border: 1px solid var(--border); border-radius: 8px; background: #fff; }
-        canvas { width: 100%; height: 130px; display: block; touch-action: none; }
-        .signature-footer { font-size: 9px; font-weight: 700; color: #94a3b8; padding: 6px; text-align: center; border-top: 1px solid var(--border); text-transform: uppercase; }
+        .checklist { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 15px 0; }
+        .check-item { display: flex; align-items: center; font-size: 12px; gap: 10px; color: #334155; font-weight: 600; }
+        .check-item input { width: auto; height: 18px; width: 18px; }
 
-        .controls { margin-top: 15px; display: flex; gap: 10px; width: 100%; max-width: 800px; }
-        .btn { flex: 1; padding: 14px; border: none; border-radius: 50px; font-weight: 800; cursor: pointer; text-transform: uppercase; font-size: 11px; transition: 0.2s; }
-        .btn-pdf { background: var(--secondary); color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .signature-wrap { margin-top: 40px; border: 1px solid var(--border); border-radius: 10px; background: #fff; }
+        canvas { width: 100%; height: 160px; display: block; cursor: crosshair; }
+        .signature-footer { font-size: 10px; font-weight: 700; color: #94a3b8; padding: 10px; text-align: center; border-top: 1px solid var(--border); text-transform: uppercase; }
+
+        .controls { margin-top: 30px; display: flex; gap: 15px; width: 100%; max-width: 850px; }
+        .btn { flex: 1; padding: 18px; border: none; border-radius: 50px; font-weight: 800; cursor: pointer; text-transform: uppercase; font-size: 13px; transition: 0.2s; }
+        .btn-clear { background: #e2e8f0; color: #475569; }
+        .btn-pdf { background: var(--secondary); color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+
+        /* 2. ESTILOS CRÍTICOS PARA EL PDF (IMPRESIÓN) */
+        @media print {
+            body { background: white; padding: 0; margin: 0; }
+            .controls { display: none !important; } /* Oculta botones */
+            #documento-pdf { 
+                width: 100%; 
+                max-width: 100%; 
+                box-shadow: none; 
+                padding: 0; 
+                border-radius: 0;
+            }
+            input, textarea, select { 
+                border: none !important; 
+                padding: 5px 0 !important; 
+                background: transparent !important; 
+            }
+            .section-header { -webkit-print-color-adjust: exact; }
+            textarea { height: auto !important; min-height: 100px; overflow: visible; }
+            @page { size: letter; margin: 1.5cm; }
+        }
+
+        @media screen and (max-width: 700px) {
+            .grid { grid-template-columns: 1fr; }
+            .checklist { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -66,58 +102,41 @@
     <header>
         <div>
             <div class="brand">TECH<span>CIS</span></div>
-            <div style="font-size: 8px; color: #64748b; font-weight: 700;">Infrastructure & Security Solutions</div>
+            <div style="font-size: 10px; color: #64748b; font-weight: 700; letter-spacing: 1px;">Infrastructure & Security Solutions</div>
         </div>
         <div class="doc-info">ORDEN DE TRABAJO: <span id="orden-id">#---</span><br>FECHA: <span id="fecha-actual"></span></div>
     </header>
 
     <div class="section-header">Identificación del Servicio</div>
     <div class="grid">
-        <div class="field"><label>Cliente / Empresa</label><input type="text" id="nombre_cliente" placeholder="Nombre"></div>
-        <div class="field"><label>Sede / Departamento</label><input type="text" placeholder="Ej: Rack Principal"></div>
+        <div class="field"><label>Cliente / Empresa</label><input type="text" placeholder="Nombre completo"></div>
+        <div class="field"><label>Sede / Departamento</label><input type="text" placeholder="Ubicación física"></div>
         <div class="field">
             <label>Tipo de Servicio</label>
             <select>
                 <option>Correctivo (Falla)</option>
-                <option>Preventivo (Mant.)</option>
+                <option>Preventivo (Mantenimiento)</option>
                 <option>Instalación / Obra</option>
-                <option>Consultoría TI</option>
             </select>
         </div>
     </div>
 
-    <div class="section-header">Detalles de Infraestructura</div>
-    <div class="grid">
-        <div class="field"><label>ID Activo / Serial</label><input type="text" placeholder="Tag de Inventario"></div>
-        <div class="field"><label>Equipo / Software</label><input type="text" placeholder="Ej: Mikrotik / ERP"></div>
-        <div class="field"><label>IP / Acceso</label><input type="text" placeholder="192.168.x.x"></div>
-    </div>
-
-    <div class="section-header">Protocolo de Seguridad y Verificación</div>
+    <div class="section-header">Protocolo de Seguridad</div>
     <div class="checklist">
-        <div class="check-item"><input type="checkbox" checked> Copia de seguridad (Backup) realizada</div>
-        <div class="check-item"><input type="checkbox" checked> Firmware / Parches actualizados</div>
+        <div class="check-item"><input type="checkbox" checked> Copia de seguridad realizada</div>
+        <div class="check-item"><input type="checkbox" checked> Firmware / Software actualizado</div>
         <div class="check-item"><input type="checkbox"> Limpieza física de componentes</div>
         <div class="check-item"><input type="checkbox" checked> Pruebas de conectividad exitosas</div>
     </div>
 
     <div class="section-header">Informe Técnico de Actividades</div>
-    <div style="flex-grow: 1;">
-        <textarea style="height: 140px; line-height: 1.5;" placeholder="Detalle técnico paso a paso de la intervención realizada..."></textarea>
-    </div>
+    <textarea placeholder="Describa de forma detallada el trabajo realizado, materiales usados y hallazgos..."></textarea>
 
     <div class="section-header">Cierre y Conformidad</div>
     <div class="grid">
-        <div class="field">
-            <label>Estado Final del Sistema</label>
-            <select style="font-weight: bold; color: #059669;">
-                <option>✅ Operativo / Entregado</option>
-                <option>⏳ Pendiente Repuesto</option>
-                <option>🔍 En Observación</option>
-            </select>
-        </div>
-        <div class="field"><label>Hora Inicio / Fin</label><input type="text" placeholder="08:00 - 10:30"></div>
-        <div class="field"><label>Técnico Responsable</label><input type="text" placeholder="Firma interna"></div>
+        <div class="field"><label>Estado Final</label><select style="font-weight: bold; color: #059669;"><option>✅ Operativo / Entregado</option><option>⏳ Pendiente Repuesto</option></select></div>
+        <div class="field"><label>Hora Inicio / Fin</label><input type="text" placeholder="00:00 - 00:00"></div>
+        <div class="field"><label>Técnico Responsable</label><input type="text" placeholder="Nombre"></div>
     </div>
 
     <div class="signature-wrap">
@@ -126,16 +145,16 @@
     </div>
 </div>
 
-<div class="controls" data-html2canvas-ignore="true">
-    <button class="btn" style="background:#e2e8f0;" onclick="signaturePad.clear()">Limpiar</button>
-    <button class="btn btn-pdf" onclick="generarPDF()">Exportar Reporte Pro</button>
+<div class="controls">
+    <button class="btn btn-clear" onclick="signaturePad.clear()">Limpiar Firma</button>
+    <button class="btn btn-pdf" onclick="exportarAReporte()">Exportar Reporte Pro</button>
 </div>
 
 <script>
     const canvas = document.getElementById('pad');
     const signaturePad = new SignaturePad(canvas, { penColor: '#0f172a' });
 
-    function resize() {
+    function resizeCanvas() {
         const ratio = Math.max(window.devicePixelRatio || 1, 1);
         canvas.width = canvas.offsetWidth * ratio;
         canvas.height = canvas.offsetHeight * ratio;
@@ -143,47 +162,22 @@
         signaturePad.clear();
     }
 
+    window.onresize = resizeCanvas;
     window.onload = () => {
-        resize();
+        resizeCanvas();
         document.getElementById('fecha-actual').innerText = new Date().toLocaleDateString();
         document.getElementById('orden-id').innerText = '#' + Math.floor(1000 + Math.random() * 9000);
     };
 
-    function generarPDF() {
-        if (signaturePad.isEmpty()) return alert("El reporte requiere firma del cliente.");
-        const element = document.getElementById('documento-pdf');
-        html2pdf().set({
-            margin: 0,
-            filename: 'Techcis_Pro_Report.pdf',
-            image: { type: 'jpeg', quality: 1 },
-            html2canvas: { scale: 2, useCORS: true, scrollY: 0, windowWidth: 800, width: 800 },
-            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-        }).from(element).save();
+    function exportarAReporte() {
+        if (signaturePad.isEmpty()) {
+            return alert("El reporte requiere la firma del cliente.");
+        }
+        // Este comando abre el diálogo nativo de impresión del sistema.
+        // Al tener configurado el @media print arriba, el PDF saldrá perfecto.
+        window.print();
     }
 </script>
 
-<script>
-    const manifest = {
-        "name": "Techcis Pro",
-        "short_name": "Techcis",
-        "start_url": ".",
-        "display": "standalone",
-        "background_color": "#ffffff",
-        "theme_color": "#a855f7",
-        "icons": [{"src": "https://cdn-icons-png.flaticon.com/512/2906/2906274.png", "sizes": "512x512", "type": "image/png"}]
-    };
-    const blob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
-    const link = document.createElement('link');
-    link.rel = 'manifest';
-    link.href = URL.createObjectURL(blob);
-    document.head.appendChild(link);
-
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register(URL.createObjectURL(new Blob([`
-            self.addEventListener('install', e => self.skipWaiting());
-            self.addEventListener('fetch', e => e.respondWith(fetch(e.request)));
-        `], {type: 'text/javascript'})));
-    }
-</script>
 </body>
 </html>
